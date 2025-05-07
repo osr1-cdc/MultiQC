@@ -609,10 +609,14 @@ class MultiqcModule(BaseMultiqcModule):
         
             table_data[s_name] = {
                 "adapter_trimmed_reads": adapter_trimmed_reads,
-                # Add other statistics here
+                "adapter_trimmed_bases": adapter_trimmed_bases,
+                "read1_adapter_sequence": read1_adapter_sequence,
+                "read2_adapter_sequence": read2_adapter_sequence,
+                "read1_adapter_counts": read1_adapter_counts,
+                "read2_adapter_counts": read2_adapter_counts,
             }
 
-        # Define the headers for the table
+        # Headers for the table
         headers = {
             "adapter_trimmed_reads": {
             "title": "Adapter Trimmed Reads",
@@ -621,10 +625,48 @@ class MultiqcModule(BaseMultiqcModule):
             "min": 0,
             "format": "{:,d}",
         },
-        # Add other headers as needed
+        {
+            "adapter_trimmed_bases": {
+            "title": "Adapter Trimmed Bases",
+            "description": "Total number of bases trimmed due to adapter cutting",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
+        {
+            "read1_adapter_sequence": {
+            "title": "Read 1 Adapter Sequence",
+            "description": "Read 1 Adapter Sequence",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
+        {
+            "read2_adapter_sequence": {
+            "title": "Read 2 Adapter Sequence",
+            "description": "Read 2 Adapter Sequence",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
+        {
+            "read1_adapter_counts": {
+            "title": "Read 1 Adapter Counts",
+            "description": "Read 1 Adapter Counts",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
+        {
+            "read2_adapter_counts": {
+            "title": "Read 2 Adapter Counts",
+            "description": "Read 2 Adapter Counts",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
     }
 
-    # Create and return the table plot
         return table.plot(
             table_data,
             headers=headers,
