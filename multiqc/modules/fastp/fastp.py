@@ -63,6 +63,7 @@ class MultiqcModule(BaseMultiqcModule):
         self.fastp_gc_content_data = dict()
         self.fastp_n_content_data = dict()
         self.fastp_overrepresented_sequences = dict()
+        self.fastp_adaper_cutting = dict()
         for k in [
             "read1_before_filtering",
             "read2_before_filtering",
@@ -160,6 +161,13 @@ class MultiqcModule(BaseMultiqcModule):
             anchor="fastp-overrepresented-sequences",
             description="Overrepresented sequences in the reads.",
             plot=self.fastp_overrepresented_sequences_plot(),
+        )
+
+        self.add_section(
+            name="Adapter Cutting Statistics",
+            anchor="fastp-adapter-cutting",
+            description="Statistics related to adapter cutting.",
+            plot=self.fastp_adapter_cutting_table(),
         )
 
     def parse_fastp_log(self, f) -> Tuple[Optional[str], Dict]:
@@ -343,6 +351,12 @@ class MultiqcModule(BaseMultiqcModule):
                 self.fastp_overrepresented_sequences[k][s_name] = parsed_json[k]["overrepresented_sequences"]
             except KeyError:
                 log.debug(f"Overrepresented sequences data {k} not found: {s_name}")
+
+             # Adapter cutting stats
+            try:
+                self.fastp_adapter_cutting[k][s_name] = parsed_json[k]["adapter_cutting"]
+            except KeyError:
+                log.debug(f"adapter_cutting data {k} not found: {s_name}")
 
         # Remove empty dicts
         if len(self.fastp_data[s_name]) == 0:
@@ -581,6 +595,49 @@ class MultiqcModule(BaseMultiqcModule):
             ),
         )
 
+    def fastp_adapter_cutting_table(self):
+        """Create a table for adapter cutting statistics."""
+        table_data = {}
+    
+        for s_name, data in self.fastp_data.items():
+            adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
+            adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
+            read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", 0)
+            read2_adapter_sequence = data.get("adapter_cutting_read2_adapter_sequence", 0)
+            read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", 0)
+            read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", 0)
+        
+            table_data[s_name] = {
+                "adapter_trimmed_reads": adapter_trimmed_reads,
+                # Add other statistics here
+            }
+
+        # Define the headers for the table
+        headers = {
+            "adapter_trimmed_reads": {
+            "title": "Adapter Trimmed Reads",
+            "description": "Total number of reads trimmed due to adapter cutting",
+            "scale": "Blues",
+            "min": 0,
+            "format": "{:,d}",
+        },
+        # Add other headers as needed
+    }
+
+    # Create and return the table plot
+        return table.plot(
+            table_data,
+            headers=headers,
+            pconfig={
+                "namespace": self.name,
+                "id": "fastp_adapter_cutting_table",
+                "title": "Fastp: Adapter Cutting Statistics",
+                "col1_header": "Sample",
+                "sort_rows": True,
+                "rows_are_samples": True,
+        },
+    )
+    
     @staticmethod
     def filter_pconfig_pdata_subplots(data, label):
         data_labels = []
