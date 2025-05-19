@@ -274,14 +274,25 @@ class MultiqcModule(BaseMultiqcModule):
             log.debug(f"Could not calculate 'pct_surviving' ({e.__class__.__name__}): {s_name}")
 
         # Parse adapter_cutting
+        # try:
+        #     for k in parsed_json["adapter_cutting"]:
+        #         try:
+        #             self.fastp_data[s_name][f"adapter_cutting_{k}"] = float(parsed_json["adapter_cutting"][k])
+        #         except (ValueError, TypeError):
+        #             pass
+        # except KeyError:
+        #     log.debug(f"fastp JSON did not have a 'adapter_cutting' key, skipping: '{s_name}'")
+
         try:
-            for k in parsed_json["adapter_cutting"]:
-                try:
-                    self.fastp_data[s_name][f"adapter_cutting_{k}"] = float(parsed_json["adapter_cutting"][k])
-                except (ValueError, TypeError):
-                    pass
+            adapter_cutting_data = parsed_json["adapter_cutting"]
+            self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_reads"] = float(adapter_cutting_data["adapter_trimmed_reads"])
+            self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_bases"] = float(adapter_cutting_data["adapter_trimmed_bases"])
+            self.fastp_data[s_name]["adapter_cutting_read1_adapter_sequence"] = adapter_cutting_data["read1_adapter_sequence"]
+            self.fastp_data[s_name]["adapter_cutting_read2_adapter_sequence"] = adapter_cutting_data["read2_adapter_sequence"]
+            self.fastp_data[s_name]["adapter_cutting_read1_adapter_counts"] = adapter_cutting_data["read1_adapter_counts"]
+            self.fastp_data[s_name]["adapter_cutting_read2_adapter_counts"] = adapter_cutting_data["read2_adapter_counts"]
         except KeyError:
-            log.debug(f"fastp JSON did not have a 'adapter_cutting' key, skipping: '{s_name}'")
+            log.debug(f"fastp JSON did not have an 'adapter_cutting' key, skipping: '{s_name}'")
 
         try:
             self.fastp_data[s_name]["pct_adapter"] = (
@@ -602,10 +613,10 @@ class MultiqcModule(BaseMultiqcModule):
         for s_name, data in self.fastp_data.items():
             adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
             adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
-            read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", 0)
-            read2_adapter_sequence = data.get("adapter_cutting_read2_adapter_sequence", 0)
-            read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", 0)
-            read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", 0)
+            read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
+            read2_adapter_sequence = data.get("adapter_cutting_read2_adapter_sequence", "N/A")
+            read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
+            read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
         
             table_data[s_name] = {
                 "adapter_trimmed_reads": adapter_trimmed_reads,
@@ -639,7 +650,7 @@ class MultiqcModule(BaseMultiqcModule):
             "description": "Read 1 Adapter Sequence",
             "scale": "Blues",
             "min": 0,
-            "format": "{:,d}",
+            "format": "{}",
         },
         {
             "read2_adapter_sequence": {
@@ -647,7 +658,7 @@ class MultiqcModule(BaseMultiqcModule):
             "description": "Read 2 Adapter Sequence",
             "scale": "Blues",
             "min": 0,
-            "format": "{:,d}",
+            "format": "{}",
         },
         {
             "read1_adapter_counts": {
@@ -655,7 +666,7 @@ class MultiqcModule(BaseMultiqcModule):
             "description": "Read 1 Adapter Counts",
             "scale": "Blues",
             "min": 0,
-            "format": "{:,d}",
+            "format": "{}",
         },
         {
             "read2_adapter_counts": {
@@ -663,7 +674,7 @@ class MultiqcModule(BaseMultiqcModule):
             "description": "Read 2 Adapter Counts",
             "scale": "Blues",
             "min": 0,
-            "format": "{:,d}",
+            "format": "{}",
         },
     }
 
