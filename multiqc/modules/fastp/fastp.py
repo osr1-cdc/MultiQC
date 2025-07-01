@@ -75,7 +75,7 @@ class MultiqcModule(BaseMultiqcModule):
             self.fastp_gc_content_data[k] = dict()
             self.fastp_n_content_data[k] = dict()
             self.fastp_overrepresented_sequences[k] = dict()
-            self.fastp_adaper_cutting[k] = dict()
+            self.fastp_adaper_cutting['adapter_cutting'] = dict()
         for s_name, parsed_json in data_by_sample.items():
             self.process_parsed_data(parsed_json, s_name)
 
