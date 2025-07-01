@@ -75,6 +75,7 @@ class MultiqcModule(BaseMultiqcModule):
             self.fastp_gc_content_data[k] = dict()
             self.fastp_n_content_data[k] = dict()
             self.fastp_overrepresented_sequences[k] = dict()
+            self.fastp_adaper_cutting[k] = dict()
         for s_name, parsed_json in data_by_sample.items():
             self.process_parsed_data(parsed_json, s_name)
 
@@ -283,16 +284,16 @@ class MultiqcModule(BaseMultiqcModule):
         # except KeyError:
         #     log.debug(f"fastp JSON did not have a 'adapter_cutting' key, skipping: '{s_name}'")
 
-        try:
-            adapter_cutting_data = parsed_json["adapter_cutting"]
-            self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_reads"] = float(adapter_cutting_data["adapter_trimmed_reads"])
-            self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_bases"] = float(adapter_cutting_data["adapter_trimmed_bases"])
-            self.fastp_data[s_name]["adapter_cutting_read1_adapter_sequence"] = adapter_cutting_data["read1_adapter_sequence"]
-            self.fastp_data[s_name]["adapter_cutting_read2_adapter_sequence"] = adapter_cutting_data["read2_adapter_sequence"]
-            self.fastp_data[s_name]["adapter_cutting_read1_adapter_counts"] = adapter_cutting_data["read1_adapter_counts"]
-            self.fastp_data[s_name]["adapter_cutting_read2_adapter_counts"] = adapter_cutting_data["read2_adapter_counts"]
-        except KeyError:
-            log.debug(f"fastp JSON did not have an 'adapter_cutting' key, skipping: '{s_name}'")
+        # try:
+        #     adapter_cutting_data = parsed_json["adapter_cutting"]
+        #     self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_reads"] = float(adapter_cutting_data["adapter_trimmed_reads"])
+        #     self.fastp_data[s_name]["adapter_cutting_adapter_trimmed_bases"] = float(adapter_cutting_data["adapter_trimmed_bases"])
+        #     self.fastp_data[s_name]["adapter_cutting_read1_adapter_sequence"] = adapter_cutting_data["read1_adapter_sequence"]
+        #     self.fastp_data[s_name]["adapter_cutting_read2_adapter_sequence"] = adapter_cutting_data["read2_adapter_sequence"]
+        #     self.fastp_data[s_name]["adapter_cutting_read1_adapter_counts"] = adapter_cutting_data["read1_adapter_counts"]
+        #     self.fastp_data[s_name]["adapter_cutting_read2_adapter_counts"] = adapter_cutting_data["read2_adapter_counts"]
+        # except KeyError:
+        #     log.debug(f"fastp JSON did not have an 'adapter_cutting' key, skipping: '{s_name}'")
 
         try:
             self.fastp_data[s_name]["pct_adapter"] = (
@@ -610,7 +611,7 @@ class MultiqcModule(BaseMultiqcModule):
         """Create a table for adapter cutting statistics."""
         table_data = {}
     
-        for s_name, data in self.fastp_data.items():
+        for s_name, data in self.fastp_adapter_cutting.items():
             adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
             adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
             read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
