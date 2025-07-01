@@ -611,7 +611,7 @@ class MultiqcModule(BaseMultiqcModule):
         """Create a table for adapter cutting statistics."""
         table_data = {}
     
-        for s_name, data in self.fastp_adapter_cutting.items():
+        for data in self.fastp_adapter_cutting.items():
             adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
             adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
             read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
@@ -619,7 +619,7 @@ class MultiqcModule(BaseMultiqcModule):
             read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
             read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
         
-            table_data[s_name] = {
+            table_data = {
                 "adapter_trimmed_reads": adapter_trimmed_reads,
                 "adapter_trimmed_bases": adapter_trimmed_bases,
                 "read1_adapter_sequence": read1_adapter_sequence,
@@ -631,51 +631,51 @@ class MultiqcModule(BaseMultiqcModule):
         # Headers for the table
         headers = {
             "adapter_trimmed_reads": {
-            "title": "Adapter Trimmed Reads",
-            "description": "Total number of reads trimmed due to adapter cutting",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{:,d}",
+                "title": "Adapter Trimmed Reads",
+                "description": "Total number of reads trimmed due to adapter cutting",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{:,d}",
         },
         {
             "adapter_trimmed_bases": {
-            "title": "Adapter Trimmed Bases",
-            "description": "Total number of bases trimmed due to adapter cutting",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{:,d}",
+                "title": "Adapter Trimmed Bases",
+                "description": "Total number of bases trimmed due to adapter cutting",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{:,d}",
         },
         {
             "read1_adapter_sequence": {
-            "title": "Read 1 Adapter Sequence",
-            "description": "Read 1 Adapter Sequence",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{}",
+                "title": "Read 1 Adapter Sequence",
+                "description": "Read 1 Adapter Sequence",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{}",
         },
         {
             "read2_adapter_sequence": {
-            "title": "Read 2 Adapter Sequence",
-            "description": "Read 2 Adapter Sequence",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{}",
+                "title": "Read 2 Adapter Sequence",
+                "description": "Read 2 Adapter Sequence",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{}",
         },
         {
             "read1_adapter_counts": {
-            "title": "Read 1 Adapter Counts",
-            "description": "Read 1 Adapter Counts",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{}",
+                "title": "Read 1 Adapter Counts",
+                "description": "Read 1 Adapter Counts",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{}",
         },
         {
             "read2_adapter_counts": {
-            "title": "Read 2 Adapter Counts",
-            "description": "Read 2 Adapter Counts",
-            "scale": "Blues",
-            "min": 0,
-            "format": "{}",
+                "title": "Read 2 Adapter Counts",
+                "description": "Read 2 Adapter Counts",
+                "scale": "Blues",
+                "min": 0,
+                "format": "{}",
         },
     }
 
@@ -686,9 +686,9 @@ class MultiqcModule(BaseMultiqcModule):
                 "namespace": self.name,
                 "id": "fastp_adapter_cutting_table",
                 "title": "Fastp: Adapter Cutting Statistics",
-                "col1_header": "Sample",
+                "col1_header": "col1",
                 "sort_rows": True,
-                "rows_are_samples": True,
+                "rows_are_samples": False,
         },
     )
     
