@@ -366,9 +366,9 @@ class MultiqcModule(BaseMultiqcModule):
 
              # Adapter cutting stats
             try:
-                self.fastp_adapter_cutting = parsed_json["adapter_cutting"]
+                self.fastp_adapter_cutting["adapter_cutting"][s_name] = parsed_json["adapter_cutting"]
             except KeyError:
-                log.debug(f"adapter_cutting data not found.")
+                log.debug(f"adapter_cutting data not found: {s_name}")
 
         # Remove empty dicts
         if len(self.fastp_data[s_name]) == 0:
@@ -627,7 +627,7 @@ class MultiqcModule(BaseMultiqcModule):
         #         "read1_adapter_counts": read1_adapter_counts,
         #         "read2_adapter_counts": read2_adapter_counts,
         #     }
-        for key, data in self.fastp_adapter_cutting.items():
+        for s_name, data in self.fastp_adapter_cutting.items():
             adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
             adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
             read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
@@ -636,7 +636,7 @@ class MultiqcModule(BaseMultiqcModule):
             read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
         
         # Store the statistics in table_data using the key
-            table_data[key] = {
+            table_data[s_name] = {
                 "adapter_trimmed_reads": adapter_trimmed_reads,
                 "adapter_trimmed_bases": adapter_trimmed_bases,
                 "read1_adapter_sequence": read1_adapter_sequence,
@@ -702,9 +702,9 @@ class MultiqcModule(BaseMultiqcModule):
                 "namespace": self.name,
                 "id": "fastp_adapter_cutting_table",
                 "title": "Fastp: Adapter Cutting Statistics",
-                "col1_header": "col1",
+                "col1_header": "Sample",
                 "sort_rows": True,
-                "rows_are_samples": False,
+                "rows_are_samples": True,
         },
     )
     
