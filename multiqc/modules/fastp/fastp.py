@@ -366,9 +366,9 @@ class MultiqcModule(BaseMultiqcModule):
 
              # Adapter cutting stats
             try:
-                self.fastp_adapter_cutting[k][s_name] = parsed_json[k]["adapter_cutting"]
+                self.fastp_adapter_cutting = parsed_json["adapter_cutting"]
             except KeyError:
-                log.debug(f"adapter_cutting data {k} not found: {s_name}")
+                log.debug(f"adapter_cutting data not found.")
 
         # Remove empty dicts
         if len(self.fastp_data[s_name]) == 0:
@@ -611,7 +611,23 @@ class MultiqcModule(BaseMultiqcModule):
         """Create a table for adapter cutting statistics."""
         table_data = {}
     
-        for data in self.fastp_adapter_cutting.items():
+        # for data in self.fastp_adapter_cutting.items():
+        #     adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
+        #     adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
+        #     read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
+        #     read2_adapter_sequence = data.get("adapter_cutting_read2_adapter_sequence", "N/A")
+        #     read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
+        #     read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
+        
+        #     table_data = {
+        #         "adapter_trimmed_reads": adapter_trimmed_reads,
+        #         "adapter_trimmed_bases": adapter_trimmed_bases,
+        #         "read1_adapter_sequence": read1_adapter_sequence,
+        #         "read2_adapter_sequence": read2_adapter_sequence,
+        #         "read1_adapter_counts": read1_adapter_counts,
+        #         "read2_adapter_counts": read2_adapter_counts,
+        #     }
+        for key, data in self.fastp_adapter_cutting.items():
             adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
             adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
             read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
@@ -619,15 +635,15 @@ class MultiqcModule(BaseMultiqcModule):
             read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
             read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
         
-            table_data = {
+        # Store the statistics in table_data using the key
+            table_data[key] = {
                 "adapter_trimmed_reads": adapter_trimmed_reads,
                 "adapter_trimmed_bases": adapter_trimmed_bases,
                 "read1_adapter_sequence": read1_adapter_sequence,
                 "read2_adapter_sequence": read2_adapter_sequence,
                 "read1_adapter_counts": read1_adapter_counts,
                 "read2_adapter_counts": read2_adapter_counts,
-            }
-
+        }
         # Headers for the table
         headers = {
             "adapter_trimmed_reads": {
