@@ -344,10 +344,11 @@ class MultiqcModule(BaseMultiqcModule):
                 log.debug(f"Overrepresented sequences data {k} not found: {s_name}")
 
              # Adapter cutting stats
-            # try:
-            #     self.fastp_adapter_cutting["adapter_cutting"][s_name] = parsed_json["adapter_cutting"]
-            # except KeyError:
-            #     log.debug(f"adapter_cutting data not found: {s_name}")
+            try:
+                self.fastp_adapter_cutting["adapter_cutting"][s_name] = parsed_json["adapter_cutting"]
+            except KeyError:
+                log.debug(f"Adapter cutting data not found: {s_name}")
+
 
         # Remove empty dicts
         if len(self.fastp_data[s_name]) == 0:
@@ -607,18 +608,15 @@ class MultiqcModule(BaseMultiqcModule):
         #         "read1_adapter_counts": read1_adapter_counts,
         #         "read2_adapter_counts": read2_adapter_counts,
         # }
-        for entry in self.fastp_adapter_cutting:
-            sample_name = entry['Sample']  
-            adapter_cutting_stats = entry['adapter_cutting'] 
-
+        for s_name in self.fastp_adapter_cutting:
         # Populate the table data per sample
-        table_data[sample_name] = {
-            "adapter_trimmed_reads": adapter_cutting_stats.get("adapter_trimmed_reads", 0),
-            "adapter_trimmed_bases": adapter_cutting_stats.get("adapter_trimmed_bases", 0),
-            "read1_adapter_sequence": adapter_cutting_stats.get("read1_adapter_sequence", "N/A"),
-            "read2_adapter_sequence": adapter_cutting_stats.get("read2_adapter_sequence", "N/A"),
-            "read1_adapter_counts": adapter_cutting_stats.get("read1_adapter_counts", {}),
-            "read2_adapter_counts": adapter_cutting_stats.get("read2_adapter_counts", {}),
+            table_data[s_name] = {
+                "adapter_trimmed_reads": adapter_cutting_stats.get("adapter_trimmed_reads", 0),
+                "adapter_trimmed_bases": adapter_cutting_stats.get("adapter_trimmed_bases", 0),
+                "read1_adapter_sequence": adapter_cutting_stats.get("read1_adapter_sequence", "N/A"),
+                "read2_adapter_sequence": adapter_cutting_stats.get("read2_adapter_sequence", "N/A"),
+                "read1_adapter_counts": adapter_cutting_stats.get("read1_adapter_counts", {}),
+                "read2_adapter_counts": adapter_cutting_stats.get("read2_adapter_counts", {}),
         }
         # Headers for the table
         headers = {
