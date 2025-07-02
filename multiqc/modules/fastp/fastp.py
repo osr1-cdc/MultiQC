@@ -608,15 +608,15 @@ class MultiqcModule(BaseMultiqcModule):
         #         "read1_adapter_counts": read1_adapter_counts,
         #         "read2_adapter_counts": read2_adapter_counts,
         # }
-        for s_name in self.fastp_adapter_cutting:
+        for s_name, data in self.fastp_adapter_cutting:
         # Populate the table data per sample
             table_data[s_name] = {
-                "adapter_trimmed_reads": adapter_cutting_stats.get("adapter_trimmed_reads", 0),
-                "adapter_trimmed_bases": adapter_cutting_stats.get("adapter_trimmed_bases", 0),
-                "read1_adapter_sequence": adapter_cutting_stats.get("read1_adapter_sequence", "N/A"),
-                "read2_adapter_sequence": adapter_cutting_stats.get("read2_adapter_sequence", "N/A"),
-                "read1_adapter_counts": adapter_cutting_stats.get("read1_adapter_counts", {}),
-                "read2_adapter_counts": adapter_cutting_stats.get("read2_adapter_counts", {}),
+                "adapter_trimmed_reads": data.get("adapter_trimmed_reads", 0),
+                "adapter_trimmed_bases": data.get("adapter_trimmed_bases", 0),
+                "read1_adapter_sequence": data.get("read1_adapter_sequence", "N/A"),
+                "read2_adapter_sequence": data.get("read2_adapter_sequence", "N/A"),
+                "read1_adapter_counts": data.get("read1_adapter_counts", {}),
+                "read2_adapter_counts": data.get("read2_adapter_counts", {}),
         }
         # Headers for the table
         headers = {
