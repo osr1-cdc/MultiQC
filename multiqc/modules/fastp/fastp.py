@@ -611,7 +611,7 @@ class MultiqcModule(BaseMultiqcModule):
         """Create a table for adapter cutting statistics."""
         table_data = {}
     
-        # for data in self.fastp_adapter_cutting.items():
+        # for s_name, data in self.fastp_adapter_cutting.items():
         #     adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
         #     adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
         #     read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
@@ -619,30 +619,27 @@ class MultiqcModule(BaseMultiqcModule):
         #     read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
         #     read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
         
-        #     table_data = {
+        # # Store the statistics in table_data using the key
+        #     table_data[s_name] = {
         #         "adapter_trimmed_reads": adapter_trimmed_reads,
         #         "adapter_trimmed_bases": adapter_trimmed_bases,
         #         "read1_adapter_sequence": read1_adapter_sequence,
         #         "read2_adapter_sequence": read2_adapter_sequence,
         #         "read1_adapter_counts": read1_adapter_counts,
         #         "read2_adapter_counts": read2_adapter_counts,
-        #     }
-        for s_name, data in self.fastp_adapter_cutting.items():
-            adapter_trimmed_reads = data.get("adapter_cutting_adapter_trimmed_reads", 0)
-            adapter_trimmed_bases = data.get("adapter_cutting_adapter_trimmed_bases", 0)
-            read1_adapter_sequence = data.get("adapter_cutting_read1_adapter_sequence", "N/A")
-            read2_adapter_sequence = data.get("adapter_cutting_read2_adapter_sequence", "N/A")
-            read1_adapter_counts = data.get("adapter_cutting_read1_adapter_counts", {})
-            read2_adapter_counts = data.get("adapter_cutting_read2_adapter_counts", {})
-        
-        # Store the statistics in table_data using the key
-            table_data[s_name] = {
-                "adapter_trimmed_reads": adapter_trimmed_reads,
-                "adapter_trimmed_bases": adapter_trimmed_bases,
-                "read1_adapter_sequence": read1_adapter_sequence,
-                "read2_adapter_sequence": read2_adapter_sequence,
-                "read1_adapter_counts": read1_adapter_counts,
-                "read2_adapter_counts": read2_adapter_counts,
+        # }
+        for entry in self.fastp_adapter_cutting:
+            sample_name = entry['Sample']  
+            adapter_cutting_stats = entry['adapter_cutting'] 
+
+        # Populate the table data per sample
+        table_data[sample_name] = {
+            "adapter_trimmed_reads": adapter_cutting_stats.get("adapter_trimmed_reads", 0),
+            "adapter_trimmed_bases": adapter_cutting_stats.get("adapter_trimmed_bases", 0),
+            "read1_adapter_sequence": adapter_cutting_stats.get("read1_adapter_sequence", "N/A"),
+            "read2_adapter_sequence": adapter_cutting_stats.get("read2_adapter_sequence", "N/A"),
+            "read1_adapter_counts": adapter_cutting_stats.get("read1_adapter_counts", {}),
+            "read2_adapter_counts": adapter_cutting_stats.get("read2_adapter_counts", {}),
         }
         # Headers for the table
         headers = {
